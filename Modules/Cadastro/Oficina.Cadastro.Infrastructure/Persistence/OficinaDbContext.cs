@@ -1,27 +1,36 @@
 using Microsoft.EntityFrameworkCore;
+using Oficina.Cadastro.Domain.Entities;
+using Oficina.Cadastro.Infrastructure.Persistence.Configurations;
+using Npgsql; // opcional se precisar de mapeios extras
+using NpgsqlTypes;
+using Oficina.Cadastro.Domain;
 
-namespace Oficina.Infrastructure.Persistence
+namespace Oficina.Cadastro.Infrastructure.Persistence;
+
+public class OficinaDbContext : DbContext
 {
-    public class OficinaDbContext : DbContext
+    public const string Schema = "oficina";
+
+    public OficinaDbContext(DbContextOptions<OficinaDbContext> options) : base(options) { }
+
+    public DbSet<Moto> Motos => Set<Moto>();
+    public DbSet<Cliente> Clientes => Set<Cliente>();
+    public DbSet<Profissional> Profissionais => Set<Profissional>();
+    public DbSet<Servico> Servicos => Set<Servico>();
+    public DbSet<OrdemServico> OrdensServico => Set<OrdemServico>();
+    public DbSet<ItemOrdemServico> ItensOrdemServico => Set<ItemOrdemServico>();
+    public DbSet<Peca> Pecas => Set<Peca>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public OficinaDbContext(DbContextOptions<OficinaDbContext> options) : base(options) { }
+        modelBuilder.HasPostgresExtension("pgcrypto"); // para gen_random_uuid()
 
-        // Exemplo de DbSet para aquecimento
-        public DbSet<Ping> Pings => Set<Ping>();
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Ping>(cfg =>
-            {
-                cfg.ToTable("pings");
-                cfg.HasKey(x => x.Id);
-            });
-        }
-    }
-
-    public class Ping
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        modelBuilder.ApplyConfiguration(new MotoConfiguration());
+        modelBuilder.ApplyConfiguration(new ClienteConfiguration());
+        modelBuilder.ApplyConfiguration(new ProfissionalConfiguration());
+        modelBuilder.ApplyConfiguration(new ServicoConfiguration());
+        modelBuilder.ApplyConfiguration(new PecaConfiguration());
+        modelBuilder.ApplyConfiguration(new OrdemServicoConfiguration());
+        modelBuilder.ApplyConfiguration(new ItemOrdemServicoConfiguration());
     }
 }

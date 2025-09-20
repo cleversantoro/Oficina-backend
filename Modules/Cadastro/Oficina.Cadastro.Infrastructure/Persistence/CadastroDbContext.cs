@@ -22,6 +22,7 @@ public class CadastroDbContext : DbContext
         {
             b.Property(p => p.Value).HasColumnName("Email").HasMaxLength(160);
         });
+
         modelBuilder.Entity<Cliente>().OwnsOne(x => x.Telefone, b =>
         {
             b.Property(p => p.Value).HasColumnName("Telefone").HasMaxLength(20);

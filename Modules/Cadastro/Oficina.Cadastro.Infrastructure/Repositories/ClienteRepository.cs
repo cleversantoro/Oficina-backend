@@ -6,8 +6,8 @@ namespace Oficina.Cadastro.Infrastructure.Repositories;
 
 public class ClienteRepository : IClienteRepository
 {
-    private readonly CadastroDbContext _db;
-    public ClienteRepository(CadastroDbContext db) => _db = db;
+    private readonly OficinaDbContext _db;
+    public ClienteRepository(OficinaDbContext db) => _db = db;
 
     public async Task<Cliente?> GetByIdAsync(Guid id, CancellationToken ct = default)
         => await _db.Clientes.FindAsync(new object?[] { id }, ct);

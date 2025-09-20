@@ -1,13 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Oficina.Cadastro.Endpoints;
-using Oficina.Infrastructure.Persistence;
+using Oficina.Cadastro.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Conn string via env var "ConnectionStrings__Default"
-var connectionString = builder.Configuration.GetConnectionString("Default")  ?? builder.Configuration["ConnectionStrings:Default"];
-
+var connectionString = builder.Configuration.GetConnectionString("OficinaDb") ?? builder.Configuration["ConnectionStrings:OficinaDb"];
 builder.Services.AddDbContext<OficinaDbContext>(opt => opt.UseNpgsql(connectionString));
+
+builder.Services.AddDbContext<OficinaDbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("OficinaDb"),
+    sql => sql.MigrationsAssembly(typeof(OficinaDbContext).Assembly.FullName))
+);
+
+// Cadastro (DI do módulo)
+builder.Services.AddCadastroModule(builder.Configuration);
+
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
@@ -18,7 +26,7 @@ builder.Services.AddSwaggerGen(setup =>
 
 // Healthcheck simples
 builder.Services.AddHealthChecks();
-    //.AddNpgSql(connectionString);
+//.AddNpgSql(connectionString);
 
 // CORS para o Angular
 builder.Services.AddCors(opt =>
@@ -29,10 +37,6 @@ builder.Services.AddCors(opt =>
         .AllowCredentials()
         .SetIsOriginAllowed(_ => true));
 });
-
-
-// Cadastro (DI do módulo)
-builder.Services.AddCadastroModule(builder.Configuration);
 
 var app = builder.Build();
 
@@ -51,4 +55,3 @@ app.MapHealthChecks("/healthz");
 app.MapCadastroEndpoints();
 
 app.Run();
-

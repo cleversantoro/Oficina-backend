@@ -14,13 +14,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace Oficina.Cadastro.Endpoints;
 
-public static class CadastroModule
+public static class OficinaModule
 {
     public static IServiceCollection AddCadastroModule(this IServiceCollection services, IConfiguration config)
     {
         // Usa a mesma ConnectionString do gateway (Default), porém com DbContext do módulo
         var cs = config.GetConnectionString("Default") ?? config["ConnectionStrings:Default"]!;
-        services.AddDbContext<CadastroDbContext>(opt => opt.UseNpgsql(cs, x => x.MigrationsHistoryTable("__EFMigrationsHistory", CadastroDbContext.Schema)));
+        services.AddDbContext<OficinaDbContext>(opt => 
+        opt.UseNpgsql(cs, x => x.MigrationsHistoryTable("__EFMigrationsHistory", OficinaDbContext.Schema)));
 
         services.AddScoped<IClienteRepository, ClienteRepository>();
         services.AddScoped<IMotoRepository, MotoRepository>(); // (implemente igual ao Cliente)

@@ -6,8 +6,8 @@ namespace Oficina.Cadastro.Infrastructure.Repositories;
 
 public class MotoRepository : IMotoRepository
 {
-    private readonly CadastroDbContext _db;
-    public MotoRepository(CadastroDbContext db) => _db = db;
+    private readonly OficinaDbContext _db;
+    public MotoRepository(OficinaDbContext db) => _db = db;
 
     public async Task<Moto?> GetByIdAsync(Guid id, CancellationToken ct = default)
         => await _db.Motos.Include(x => x.Cliente).FirstOrDefaultAsync(x => x.Id == id, ct);

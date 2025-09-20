@@ -1,7 +1,6 @@
-namespace Oficina.Cadastro.Domain.Entities;
-
 using Oficina.Cadastro.Domain.ValueObjects;
 
+namespace Oficina.Cadastro.Domain.Entities;
 public class Cliente
 {
     public Guid Id { get; private set; } = Guid.NewGuid();

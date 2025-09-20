@@ -15,7 +15,7 @@ public class Moto
 
     public Cliente? Cliente { get; private set; }
 
-    private Moto() { }
+    //private Moto() { }
 
     public Moto(Guid clienteId, string marca, string modelo, int ano, Placa placa, string? chassi, int? kmAtual)
     {
